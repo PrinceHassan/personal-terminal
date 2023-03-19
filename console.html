@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Console</title>
+</head>
+<script src='particles/particles.js'></script>
+
+<body id="particles-js">
+  <div class='console'>
+    <div class='console-inner'>
+      <div id="outputs">
+      </div>
+      <div class='output-cmd'><textarea autofocus spellcheck="false" class='console-input'
+          placeholder="Type command..."></textarea></div>
+    </div>
+  </div>
+</body>
+
+<script>
+  var name = '';
+  var previousCmd = '';
+  var count = '';
+  var commandCache = [];
+  var input = document.getElementsByClassName("console-input")[0];
+  var output = document.getElementById("outputs");
+  var console = document.getElementsByClassName("console")[0];
+  var facts = [
+    'It took me a <spell right=\'week\' class=\'wek\' onclick=\'spellC(\"wek\")\'>weak</spell> to make this.',
+    'This website is 90% javascript, django is tittle',
+    'I swear to God working on this I saw an error: "console.log" is not a function, out of the blue!',
+    'Django > Flask',
+    'AI will take all programming jobs... no cap',
+    'pressing this will suicide the website: <button onclick="destroy()">Self Destruct!</button>, dont worry, just reload to get back.',
+    "Don't <a target='_blank' href='https://www.youtube.com/watch?v=dQw4w9WgXcQ'>Click</a> it",
+    'Read the Copyright (C) earlier? It was fake',
+    'God <spell right="bless" class="bls" onclick=\'spellC("bls")\'>blass</spell> stackoverflow',
+    'It took roughly 200 lines of java script',
+    'This is <spell right=\'literally\' class=\'lit\' onclick=\'spellC(\"lit\")\'>litaraly</spell> a static webpage.',
+    'I hate JS',
+    'I am Hassan, Burair ka bhai... Just in case...',
+    '90% of names contain the alphabet "a" in them',
+    'type "effects" to see cool effects in the background! (pro tip: clear the screen for optimal experience)',
+
+  ]
+  var portfolio = {
+    "game": function () {
+      if (previousCmd=="portF"){
+        previousCmd = '';
+        return "<p>I do game dev</p>" 
+      }
+      else{
+        return (`<p>command: "game" not <spell right='found' class='fnd' onclick='spellC(\"fnd\")'>faound</spell></p> <br> <p>type "help" for a list of commands</p>`)
+      } 
+        
+    },
+    "web": function () {
+      if (previousCmd=="portF"){
+        previousCmd = '';
+        return "<p>I do web dev</p>"
+      }
+      else{
+        return (`<p>command: "web" not found </p> <br> <p>type "help" for a list of commands</p>`)
+      }
+    },
+  }
+  var commands = {
+    "effects": function(){
+      startParticles();
+      return "<p>Particles Initialized</p>";
+    },
+    "gmail": function (comd){
+      if (!name) return '<p>Login first! Type "login" to log in</p>';
+      if (previousCmd == "contact"){
+        previousCmd = '';
+        return "<p>gmail:</p><p> <strong>ph015016test1@gmail.com</strong></p><p><strong>ph0150163@gmail.com</strong></p>"
+      }
+      else{
+        return "<p>Deez tricks wont work ma man</p>"
+      }
+    },
+    "contact": function (comd){
+      if (!name) return '<p>Login first! Type "login" to log in</p>';
+      previousCmd = "contact";
+      if (comd){
+        if (comd == "gmail"){
+        return commands['gmail']();
+      }
+      else{
+        return `<p>Unknown command "${comd}"</p><p>Available commands:</p><p><ul><li>gmail</li></ul></p>`
+        }
+      }
+      else{
+         return ("<p>Please select medium of connection: <ul><li>gmail -- Gmail. duh.</li></ul></p>")
+      }
+    },
+    "help": function (comd = "") {
+      return `<p>These are the list of commands: <br> <ul> <li>help  --  lists all <spell right='commands' class='cmds' onclick='spellC(\"cmds\")'>cummands</spell></li><li>print [value] --  shows value in terminal </li><li>clear -- clears the terminal</li>${(name) ? '' : '<br><p> Please provide your name to unlock below commands (type "login"):</p> <br>'}<li>portf -- Show my portfolio</li><li>contact -- Load contact info</li><li>easter -- Cool Easter Egg</li><li>random -- get something random</li><li>logout -- logout current session</li></ul></p>`
+    },
+    "print": function (comd) {
+      return `<p> ${comd} </p>`
+    },
+    "random": function(comd){
+      if (!name) return '<p>Login first! Type "login" to log in</p>';
+      return randomFact();
+    },
+    "easter": function (comd=""){
+      previousCmd = '';
+      if (!name) return '<p>Login first! Type "login" to log in</p>';
+      return "<p>Find and <spell right='' class='and' onclick='spellC(\"and\")'>and </spell>click wrong spellings to correct them! <spell right='understood?' class='uds' onclick='spellC(\"uds\")'>andarstand?</p>"
+    },
+    "login": function (comd) {
+      if (name) {
+        previousCmd = '';
+        return `Already Logged in as ${name}!`;
+      }
+      else if (comd) {
+        if (!normalName(comd)  || comd.length < 3){
+          previousCmd = "login";
+          return `You really thought I would believe your name is ${comd}? Come on bro, give your real one`;
+        }
+        name = comd[0].toUpperCase() + comd.slice(1, comd.length);
+        return `Greetings ${name}! I hope you like my console website! (it took ... to make it!)`
+      }
+      else {
+        previousCmd = "login";
+        return "<p>Thank you for existing! please enter your name...</p>"
+      }
+    },
+    "logout": function (comd = "") {
+      if (!name) return '<p>Login first! Type "login" to log in</p>';
+      name = '';
+      return 'Logged out.'
+    },
+    "clear": function (comd = "") {
+      output.innerHTML = "";
+    },
+    "portf": function (comd) {
+      previousCmd = '';
+      if (!name) return '<p>Login first! Type "login" to log in</p>';
+      previousCmd = 'portF';
+      if (comd) {
+        if (comd in portfolio) {
+          return portfolio[comd]();
+        }
+        else {
+          return `<p>unknown command ${comd}, try: commands</p>`
+        }
+      }
+      else {
+        return '<p>Explore my portfolio <br> <ol><li>game -- My experience in Game Development :)</li><li>web -- My story of web development...</li><li>scr -- My skills in web scraping and automation!</li></ol> </p>'
+      }
+    },
+    "game": function (comd = null) {
+      return portfolio['game']();
+    },
+    "web": function (comd = null) {
+      return portfolio['web']();
+    },
+  }
+  
+  //initial message
+  output.innerHTML += "<p><spell right='Prince Hassan' class='ph' onclick='spellC(\"ph\")'>PH</spell> Custom Console <spell right='Powered' class='pwd' onclick='spellC(\"pwd\")'>Poverd</spell> By <spell right='spelling are right XD it is written Django but pronounced Jango' class='djg' onclick='spellC(\"djg\")'>Django</spell></p><p>Copyright (C) 2023 Custom Console. All rights reserved.</p><br><p>Performing system checks...</p><p>Done.</p>";
+  input.value = '';
+
+  function randomFact(){
+    var fact = facts[Math.floor(Math.random()*facts.length)];
+    return `<p>${fact}</p>`
+  }
+  function destroy(){
+    document.body.innerHTML = ''
+  }
+  function process(txt) {
+    txt = txt.slice(0, -1).split(" ");
+    var comd = txt.slice(1, txt.length).join(" ");
+    commandCache.push(txt);
+    txt = txt[0];
+    if (txt in commands) {
+      return commands[txt](comd);
+    }
+    else if (previousCmd == "login") {
+      previousCmd = "";
+      return commands["login"](txt);
+    }
+    else {
+      var closest = findClosestMatch(['help', 'print', 'clear', 'portf', 'contact', 'easter', 'random', 'logout', 'effects', 'login'], txt);
+      return (`<p>command: "${txt}" not found, ${closest? 'did you mean '+closest+'?': ""}</p> <br> <p>type "help" for a list of commands</p>`);
+    }
+  }
+  function normalName(myString) {
+  return !(/\d/.test(myString) || /[ `!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/.test(myString));
+}
+  function command() {
+    var cmd = input.value;
+    if (cmd.length < 2){
+      input.value='';
+      return
+    }
+    var result = process(cmd);
+    if (result) {
+      cmd = `<div class="output-cmd">${cmd}</div>`;
+      output.innerHTML += cmd;
+      output.innerHTML += result;
+      input.value = '';
+    }
+    input.value = '';
+    input.scrollIntoView();
+  }
+  function spellC(idx){
+    var spell = document.getElementsByClassName(idx);
+    spell = spell[spell.length-1];
+    spell.innerText = spell.getAttribute("right");
+  }
+  function prevCmd(direction){
+    count += direction?-1:1;
+    count = (count>0)?count:0;
+    input.value = commandCache[count%commandCache.length];
+  }
+  input.addEventListener("keyup", (event) => {
+    if (event.key === "Enter") {
+      command();
+    }
+    if (event.key === "ArrowDown"){
+      if (commandCache.length > 0){
+        prevCmd(0);
+      }
+    }
+    else if (event.key === "ArrowUp"){
+      prevCmd(1);
+    }
+  });
+  console.addEventListener('click', (event)=>{
+    input.focus();
+  })
+  function startParticles(){
+  particlesJS('particles-js',{'particles':{'number':{'value':50},'color':{'value':'#ffffff'},'shape':{'type':'triangle','polygon':{'nb_sides':5}},'opacity':{'value':0.09,'random':false},'size':{'value':11,'random':true},'line_linked':{'enable':true,'distance':150,'color':'#ffffff','opacity':1,'width':1},'move':{'enable':true,'speed':4,'direction':'none','random':false,'straight':false,'out_mode':'out','bounce':false}},'interactivity':{'detect_on':'canvas','events':{'onhover':{'enable':false},'onclick':{'enable':true,'mode':'push'},'resize':true},'modes':{'push':{'particles_nb':4}}},'retina_detect':true},function(){});
+  }
+  function findClosestMatch(list, str) {
+  let closestMatch = '';
+  let shortestDistance = Number.MAX_SAFE_INTEGER;
+  let maxLength = Math.max(str.length, list.reduce((max, item) => Math.max(max, item.length), 0));
+
+  for (let i = 0; i < list.length; i++) {
+    let distance = levenshteinDistance(list[i], str);
+
+    if (distance < shortestDistance) {
+      shortestDistance = distance;
+      closestMatch = list[i];
+    }
+  }
+
+  let percentageMatch = (1 - (shortestDistance / maxLength)) * 100;
+  return (percentageMatch>80)? closestMatch : null;
+}
+function levenshteinDistance(str1, str2) {
+
+
+  const matrix = [];
+
+  // Initialize matrix
+  for (let i = 0; i <= str2.length; i++) {
+    matrix[i] = [i];
+  }
+
+  for (let j = 0; j <= str1.length; j++) {
+    matrix[0][j] = j;
+  }
+
+  // Fill matrix
+  for (let i = 1; i <= str2.length; i++) {
+    for (let j = 1; j <= str1.length; j++) {
+      if (str2.charAt(i - 1) === str1.charAt(j - 1)) {
+        matrix[i][j] = matrix[i - 1][j - 1];
+      } else {
+        matrix[i][j] = Math.min(
+          matrix[i - 1][j - 1] + 1,
+          matrix[i][j - 1] + 1,
+          matrix[i - 1][j] + 1
+        );
+      }
+    }
+  }
+
+  return matrix[str2.length][str1.length];
+}
+
+
+</script>
+<style>
+  html,
+  body {
+    min-height: 100%;
+  }
+
+  body {
+    background-color: #ececec;
+    background: linear-gradient(135deg, #0f55e4, #0a3a9c);
+    color: #fff;
+    /*padding: 0.5em 1em;*/
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .console {
+    overflow:hidden;
+    position: fixed;
+    font-family: monospace, monospace;
+    color: #fff;
+    width: calc(100% - 3em);
+    max-width: 100%;
+    max-height: calc(100% - 3em);
+    /* overflow-y: auto; */
+    margin: 1em 1em;
+    padding-top: 0.5em;
+    padding-bottom: 0.5em;
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 0.5em;
+    box-shadow: 0 0.75em 3em rgba(50, 50, 50, 0.35);
+    z-index: 100;
+    line-height: 1.5;
+  }
+
+  .console-input {
+    font-family: monospace, monospace;
+    background-color: transparent;
+    border: none;
+    outline: none;
+    color: #fff;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    min-width: calc(100% - 2em);
+    resize: none;
+  }
+
+  .console-input:before {
+    content: '> ';
+    color: #FC3565;
+    vertical-align: top;
+  }
+
+  .output-cmd:before {
+    content: '>>> ';
+    color: #FC3565;
+    vertical-align: top;
+  }
+
+  .output-text:before {
+    content: '> ';
+    color: #5F8787;
+    font-weight: 600 !important;
+    vertical-align: top;
+  }
+
+  .output-text,
+  .output-cmd {
+    width: 100%;
+    display: block;
+  }
+
+  .console-inner {
+    padding: 0.3em 1.1em;
+  }
+
+  .output-text,
+  .output-cmd {
+    display: block;
+    white-space: pre;
+  }
+
+  #outputs div {
+    opacity: 0.85;
+  }
+
+  #outputs div div {
+    color: #46f01d;
+    opacity: 0.8;
+    text-decoration: none;
+  }
+
+  #outputs a {
+    color: #46f01d;
+    opacity: 0.8;
+    text-decoration: underline;
+  }
+
+  .console-inner .output-text#ready {
+    color: #3df5b8;
+    font-style: italic;
+    opacity: 0.75;
+  }
+
+  .particles-js-canvas-el {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+  }
+</style>
+
+</html>
