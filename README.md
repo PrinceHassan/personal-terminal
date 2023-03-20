@@ -49,7 +49,7 @@ levenshtein.js| To match commands | command "hell" not found, did you mean "help
          
          
 #  Link:  #
-https://princehassan.github.io/personal-terminal/
+https://princehassan.github.io/personal-terminal/console.html
          
 *If you liked it, please give a star to it, it's my first project on github...*
         
